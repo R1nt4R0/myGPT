@@ -34,6 +34,7 @@ async function queryModel(inputText) {
         },
       }
     );
+   
     return response.data;
   } catch (error) {
     console.error("Erreur API Hugging Face:", error);
@@ -67,6 +68,19 @@ app.get("/history", async (req, res) => {
   const conversations = await Conversation.find().sort({ createdAt: -1 });
   res.json(conversations);
 });
+
+// Route pour supprimer une conversation
+app.delete("/history/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Conversation.findByIdAndDelete(id);
+    res.json({ message: "Conversation supprimée avec succès" });
+  } catch (error) {
+    console.error("Erreur lors de la suppression:", error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
 
 // Lancer le serveur
 const PORT = process.env.PORT || 5000;
